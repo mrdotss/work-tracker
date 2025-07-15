@@ -1,0 +1,137 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STAFF
+  ADMIN
+}
+
+model User {
+  id           String      @id @default(uuid()) @db.Uuid
+  first_name   String      @db.VarChar(50)
+  last_name    String      @db.VarChar(50)
+  username     String      @unique @db.VarChar(50)
+  password     String      @db.VarChar(255)
+  phone_number String?     @db.VarChar(15)
+  role         Role        @default(STAFF) @map("roles")
+  user_image   String?     @db.Text
+  is_active    Boolean     @default(true)
+  last_login   DateTime?   @db.Timestamp(6)
+  created_at   DateTime?   @db.Timestamp(6)
+  updated_at   DateTime?   @db.Timestamp(6)
+
+  Workchecks   Workcheck[] @relation("WorkchecksChecker")
+  Approvals    Approval[]  @relation("ApprovalsApprover")
+
+  @@map("users")
+  @@index([created_at], name: "idx_users_created_at")
+}
+
+model Unit {
+  id         String      @id @default(uuid()) @db.Uuid
+  name       String?     @db.VarChar(255)
+  type       String?     @db.VarChar(50)
+  is_deleted  Boolean    @default(false)
+  deleted_at DateTime?   @db.Timestamp(6)
+
+  Workchecks Workcheck[]
+
+  @@map("units")
+  @@index([name])
+}
+
+model CheckItem {
+  id         String             @id @default(uuid()) @db.Uuid
+  code       String             @unique @db.VarChar(50)
+  label      String?            @db.VarChar(255)
+  sort_order Int?               @db.SmallInt
+  is_active  Boolean            @default(true)
+  created_at DateTime?          @db.Timestamp(6)
+  updated_at DateTime?          @db.Timestamp(6)
+  is_deleted Boolean            @default(false)
+  deleted_at DateTime?          @db.Timestamp(6)
+
+  WorkcheckItems WorkcheckItem[]
+
+  @@map("check_items")
+  @@index([sort_order])
+}
+
+model Workcheck {
+  id              String             @id @default(uuid()) @db.Uuid
+  checker_id      String             @db.Uuid
+  unit_id         String             @db.Uuid
+  hours_meter     Int?               @db.Integer
+  is_submitted    Boolean            @default(false)
+  created_at      DateTime?          @db.Timestamp(6)
+  updated_at      DateTime?          @db.Timestamp(6)
+  is_deleted      Boolean            @default(false)
+  deleted_at      DateTime?          @db.Timestamp(6)
+
+  Checker         User               @relation("WorkchecksChecker", fields: [checker_id], references: [id])
+  Unit            Unit               @relation(fields: [unit_id], references: [id])
+  WorkcheckItems  WorkcheckItem[]
+  Approval        Approval?
+
+  @@map("workchecks")
+  @@index([unit_id, created_at], name: "idx_wc_unit_date")
+  @@index([checker_id])
+  @@index([is_deleted])
+}
+
+model WorkcheckItem {
+  id             String               @id @default(uuid()) @db.Uuid
+  workcheck_id   String?              @db.Uuid
+  item_id        String?              @db.Uuid
+  actions        String[]             @default([])
+  note           String?              @db.Text
+
+  Workcheck      Workcheck?           @relation(fields: [workcheck_id], references: [id])
+  CheckItem      CheckItem?           @relation(fields: [item_id], references: [id])
+  Images         WorkcheckItemImage[]
+
+  @@map("workcheck_items")
+  @@index([workcheck_id])
+  @@index([item_id])
+  @@unique([workcheck_id, item_id])
+}
+
+model WorkcheckItemImage {
+  id             String               @id @default(uuid()) @db.Uuid
+  item_id        String?              @db.Uuid
+  file_name      String?              @db.Text
+  uploaded_at    DateTime?            @db.Timestamp(6)
+
+  WorkcheckItem  WorkcheckItem?       @relation(fields: [item_id], references: [id])
+
+  @@map("workcheck_item_images")
+  @@index([item_id])
+}
+
+model Approval {
+  id            String                @id @default(uuid()) @db.Uuid
+  workcheck_id  String                @db.Uuid
+  approver_id   String?               @db.Uuid
+  is_approved   Boolean?              @db.Boolean
+  comments      String?               @db.Text
+  approved_at   DateTime?             @db.Timestamp(6)
+
+  Workcheck    Workcheck              @relation(fields: [workcheck_id], references: [id])
+  Approver     User?                  @relation("ApprovalsApprover", fields: [approver_id], references: [id])
+
+  @@map("approvals")
+  @@unique([workcheck_id])
+  @@index([approved_at], name: "idx_approvals_date")
+}
