@@ -9,6 +9,8 @@ const Hero = () => {
           alt="background"
           src="https://deifkwefumgah.cloudfront.net/shadcnblocks/block/patterns/square-alt-grid.svg"
           className="[mask-image:radial-gradient(75%_75%_at_center,white,transparent)] opacity-90"
+          fill
+          priority
         />
       </div>
       <div className="relative z-10 container mx-auto">
@@ -18,7 +20,9 @@ const Hero = () => {
               <Image
                 src="/wt-icon-dark.png"
                 alt="logo"
-                className="h-16"
+                width={64}
+                height={64}
+                className="h-16 w-auto"
               />
             </div>
             <div>

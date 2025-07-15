@@ -664,6 +664,8 @@ export function TaskRecords({
                                           <Image
                                               src={image.file_name || '/placeholder.png'}
                                               alt="Proof"
+                                              width={250}
+                                              height={250}
                                               className="object-cover w-full h-full"
                                           />
                                         </a>

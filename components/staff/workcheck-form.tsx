@@ -37,6 +37,15 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const hoursTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
+  // Ref to hold the latest workcheck state for debounced updates
+  const workcheckRef = useRef(workcheck);
+
+  // Keep the ref updated with the latest state
+  useEffect(() => {
+    workcheckRef.current = workcheck;
+  }, [workcheck]);
+
+
   useEffect(() => {
     if (session?.user) {
       if (editWorkcheckId) {
@@ -184,7 +193,7 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
         prev ? { ...prev, hours_meter: value } : prev
     )
 
-    // Schedule API call in 2s
+    // Schedule API call in 1s
     hoursTimeoutRef.current = setTimeout(async () => {
       try {
         const response = await fetch('/api/staff/workcheck/update-hours', {
@@ -202,34 +211,35 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
       } finally {
         hoursTimeoutRef.current = null
       }
-    }, 2000)
+    }, 1000)
   }
 
   // Debounced update function
-  const debouncedItemUpdate = (itemId: string, field: string, value: string) => {
-    // Clear existing timeout for this item+field combination
-    const timeoutKey = `${itemId}-${field}`
-    const existingTimeout = updateTimeouts.get(timeoutKey)
+  const debouncedItemUpdate = (itemId: string, field: 'note' | 'actions') => {
+    const timeoutKey = `${itemId}-${field}`;
+    const existingTimeout = updateTimeouts.get(timeoutKey);
     if (existingTimeout) {
-      clearTimeout(existingTimeout)
+      clearTimeout(existingTimeout);
     }
 
-    // Update local state immediately for better UX
-    setWorkcheck(prev => {
-      if (!prev) return prev
-
-      return {
-        ...prev,
-        WorkcheckItems: prev.WorkcheckItems.map(item =>
-            item.id === itemId
-                ? { ...item, [field]: value }
-                : item
-        )
-      }
-    })
-
-    // Set new timeout to send API request after 1 second
     const newTimeout = setTimeout(async () => {
+      // Read the latest state from the ref when the timeout executes
+      const currentWorkcheck = workcheckRef.current;
+      const itemToUpdate = currentWorkcheck?.WorkcheckItems.find(item => item.id === itemId);
+
+      if (!itemToUpdate) {
+        console.error("Could not find item to update in ref");
+        return;
+      }
+
+      // Get the latest value from the item
+      let value: string | string[];
+      if (field === 'actions') {
+        value = JSON.stringify(itemToUpdate.actions);
+      } else {
+        value = itemToUpdate.note;
+      }
+
       try {
         const response = await fetch('/api/staff/workcheck/update-item', {
           method: 'PUT',
@@ -241,32 +251,40 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
             field,
             value,
           }),
-        })
+        });
 
         if (!response.ok) {
-          throw new Error('Failed to update item')
+          throw new Error('Failed to update item');
         }
 
-        // Remove timeout from map after successful update
         setUpdateTimeouts(prev => {
-          const newMap = new Map(prev)
-          newMap.delete(timeoutKey)
-          return newMap
-        })
+          const newMap = new Map(prev);
+          newMap.delete(timeoutKey);
+          return newMap;
+        });
 
       } catch (error) {
-        console.error('Error updating item:', error)
-        toast.error('Failed to update item')
+        console.error('Error updating item:', error);
+        toast.error(`Failed to update ${field}`);
       }
-    }, 2000) // 2 second delay
+    }, 1000); // 1 second delay
 
-    // Store the new timeout
-    setUpdateTimeouts(prev => {
-      const newMap = new Map(prev)
-      newMap.set(timeoutKey, newTimeout)
-      return newMap
-    })
-  }
+    setUpdateTimeouts(prev => new Map(prev).set(timeoutKey, newTimeout));
+  };
+
+  const handleNoteChange = (itemId: string, value: string) => {
+    setWorkcheck(prev => {
+      if (!prev) return prev;
+      const newWorkcheck = {
+        ...prev,
+        WorkcheckItems: prev.WorkcheckItems.map(item =>
+            item.id === itemId ? { ...item, note: value } : item
+        ),
+      };
+      debouncedItemUpdate(itemId, 'note');
+      return newWorkcheck;
+    });
+  };
 
   const handleSubmit = async () => {
     if (!workcheck) return
@@ -450,9 +468,9 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
         return {
           ...prev,
           WorkcheckItems: prev.WorkcheckItems.map(item =>
-            item.id === itemId
-              ? { ...item, images: item.images.filter(img => img !== imageUrl) }
-              : item
+              item.id === itemId
+                  ? { ...item, images: item.images.filter(img => img !== imageUrl) }
+                  : item
           )
         }
       })
@@ -467,27 +485,28 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
   // Update actions instead of single action/result
   const handleActionChange = (itemId: string, action: string, checked: boolean) => {
     setWorkcheck(prev => {
-      if (!prev) return prev
+      if (!prev) return prev;
 
-      return {
+      const newWorkcheck = {
         ...prev,
         WorkcheckItems: prev.WorkcheckItems.map(item => {
           if (item.id === itemId) {
-            const currentActions = item.actions || []
+            const currentActions = item.actions || [];
             const newActions = checked
-              ? [...currentActions, action]
-              : currentActions.filter(a => a !== action)
-
-            // Update via API with debouncing - convert array to string for API
-            debouncedItemUpdate(itemId, 'actions', JSON.stringify(newActions))
-
-            return { ...item, actions: newActions }
+                ? [...currentActions, action]
+                : currentActions.filter(a => a !== action);
+            return { ...item, actions: newActions };
           }
-          return item
-        })
-      }
-    })
-  }
+          return item;
+        }),
+      };
+
+      // Trigger the debounced update
+      debouncedItemUpdate(itemId, 'actions');
+
+      return newWorkcheck;
+    });
+  };
 
   if (isLoading) {
     return (
@@ -708,23 +727,23 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
                       <Label htmlFor={`action-${item.id}`}>Action Taken</Label>
                       <div className="flex flex-wrap gap-4 mt-2">
                         {['P', 'B', 'L', 'T'].map(action => (
-                          <div key={action} className="flex items-center space-x-2">
-                            <Checkbox
-                              id={`action-${item.id}-${action}`}
-                              checked={item.actions?.includes(action)}
-                              onCheckedChange={(checked) => handleActionChange(item.id, action, !!checked)}
-                              disabled={workcheck.isSubmitted}
-                            />
-                            <Label
-                              htmlFor={`action-${item.id}-${action}`}
-                              className="text-sm font-medium cursor-pointer"
-                            >
-                              {action === 'P' && 'Periksa'}
-                              {action === 'B' && 'Bersihkan'}
-                              {action === 'L' && 'Luminasi'}
-                              {action === 'T' && 'Tambah'}
-                            </Label>
-                          </div>
+                            <div key={action} className="flex items-center space-x-2">
+                              <Checkbox
+                                  id={`action-${item.id}-${action}`}
+                                  checked={item.actions?.includes(action)}
+                                  onCheckedChange={(checked) => handleActionChange(item.id, action, !!checked)}
+                                  disabled={workcheck.isSubmitted}
+                              />
+                              <Label
+                                  htmlFor={`action-${item.id}-${action}`}
+                                  className="text-sm font-medium cursor-pointer"
+                              >
+                                {action === 'P' && 'Periksa'}
+                                {action === 'B' && 'Bersihkan'}
+                                {action === 'L' && 'Luminasi'}
+                                {action === 'T' && 'Tambah'}
+                              </Label>
+                            </div>
                         ))}
                       </div>
                     </div>
@@ -735,7 +754,7 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
                     <Textarea
                         id={`note-${item.id}`}
                         value={item.note}
-                        onChange={(e) => debouncedItemUpdate(item.id, 'note', e.target.value)}
+                        onChange={(e) => handleNoteChange(item.id, e.target.value)}
                         placeholder="Add any additional notes..."
                         disabled={workcheck.isSubmitted}
                     />
@@ -769,6 +788,8 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
                                       alt={`Proof ${index + 1}`}
                                       className="w-20 h-20 object-cover rounded-md border cursor-pointer hover:opacity-80 transition-opacity"
                                       onClick={() => setSelectedImage(imageUrl)}
+                                      width={250}
+                                      height={250}
                                   />
                                   {!workcheck.isSubmitted && (
                                       <Button
@@ -863,22 +884,24 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
                 className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
                 onClick={() => setSelectedImage(null)}
             >
-                <div className="relative max-w-4xl max-h-full">
-                    <Image
-                        src={selectedImage}
-                        alt="Full size preview"
-                        className="max-w-full max-h-full object-contain rounded-lg"
-                        onClick={(e) => e.stopPropagation()}
-                    />
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white"
-                        onClick={() => setSelectedImage(null)}
-                    >
-                        <X className="h-4 w-4" />
-                    </Button>
-                </div>
+              <div className="relative max-w-4xl max-h-full">
+                <Image
+                    src={selectedImage}
+                    alt="Full size preview"
+                    className="max-w-full max-h-full object-contain rounded-lg"
+                    onClick={(e) => e.stopPropagation()}
+                    width={750}
+                    height={750}
+                />
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white"
+                    onClick={() => setSelectedImage(null)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
         )}
       </div>

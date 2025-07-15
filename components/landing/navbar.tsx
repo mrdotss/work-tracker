@@ -42,8 +42,10 @@ const Navbar = () => {
           >
             <Image
               src="/wt-icon-dark.png"
-              className="max-h-8"
               alt="Work Tracker Navbar"
+              width={32}
+              height={32}
+              className="h-8 w-auto"
             />
             <span className="text-lg font-semibold tracking-tighter">
               Work Tracker
@@ -63,9 +65,11 @@ const Navbar = () => {
                     className="flex items-center gap-2"
                   >
                     <Image
-                      src="https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/shadcnblockscom-icon.svg"
-                      className="max-h-8"
+                      src="/wt-icon-dark.png"
                       alt="Work Tracker Navbar"
+                      width={32}
+                      height={32}
+                      className="h-8 w-auto"
                     />
                     <span className="text-lg font-semibold tracking-tighter">
                       Work Tracker

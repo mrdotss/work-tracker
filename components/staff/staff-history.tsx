@@ -371,8 +371,8 @@ export function StaffHistory({ onEditWorkcheck }: StaffHistoryProps) {
                                       src={image.file_name || '/placeholder.png'}
                                       alt="Proof"
                                       className="object-cover w-full h-full"
-                                      width={80}
-                                      height={80}
+                                      width={250}
+                                      height={250}
                                   />
                                 </a>
                             ))}

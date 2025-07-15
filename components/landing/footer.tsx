@@ -60,7 +60,9 @@ const Footer = ({
                   src={logo.src}
                   alt={logo.alt}
                   title={logo.title}
-                  className="h-8"
+                  width={50}
+                  height={50}
+                  className="h-8 w-auto"
                 />
               </a>
               <h2 className="text-xl font-semibold">{logo.title}</h2>

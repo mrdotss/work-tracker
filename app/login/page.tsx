@@ -30,6 +30,7 @@ export default function LoginPage() {
                       object-contain
                       dark:brightness-[0.2]
                       dark:grayscale"
+              fill
           />
         </div>
       </div>
