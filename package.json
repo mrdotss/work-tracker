@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
-    "format": "prettier --write \"**/*.{ts,tsx,js,jsx}\""
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx}\"",
+    "postinstall": "prisma generate"
   },
   "prisma": {
     "schema": "prisma/schema.prisma",
