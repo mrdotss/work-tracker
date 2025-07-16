@@ -337,6 +337,12 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
 
   const startCamera = async (itemId: string) => {
     try {
+      // Check if getUserMedia is available
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error('getUserMedia is not supported in this browser/context')
+        toast.error('Camera access is not supported in this browser')
+      }
+
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: {
           width: { ideal: 1280 },
