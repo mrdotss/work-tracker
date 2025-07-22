@@ -16,9 +16,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 
 const profileSchema = z.object({
-  first_name: z.string().min(1, "First name is required"),
-  last_name: z.string().min(1, "Last name is required"),
-  username: z.string().min(1, "Username is required"),
+  first_name: z.string().min(1, "Nama depan wajib diisi"),
+  last_name: z.string().min(1, "Nama belakang wajib diisi"),
+  username: z.string().min(1, "Username wajib diisi"),
   phone_number: z.string().optional(),
   password: z.string().optional(),
   user_image: z.string().optional(),
@@ -198,11 +198,11 @@ export function ProfileForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Profile Information</CardTitle>
+        <CardTitle>Informasi Akun</CardTitle>
         <CardDescription>
           {isStaff
-            ? "Update your personal information. Contact your admin to change username or password."
-            : "Update your profile information and account settings."
+            ? "Ubah informasi personal anda. Hubungi admin anda untuk mengubah username atau password."
+            : "Ubah informasi profil dan penganturan akun."
           }
         </CardDescription>
       </CardHeader>
@@ -239,7 +239,7 @@ export function ProfileForm() {
                     onClick={() => document.getElementById("profile-image")?.click()}
                   >
                     <Upload className="h-4 w-4 mr-2" />
-                    Change Photo
+                    Ubah Foto Profil
                   </Button>
                 </div>
               </div>
@@ -251,7 +251,7 @@ export function ProfileForm() {
                 name="first_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>First Name</FormLabel>
+                    <FormLabel>Nama Depan</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -265,7 +265,7 @@ export function ProfileForm() {
                 name="last_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Last Name</FormLabel>
+                    <FormLabel>Nama Belakang</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -286,7 +286,7 @@ export function ProfileForm() {
                   </FormControl>
                   {isStaff && (
                     <FormDescription>
-                      Contact your admin to change your username.
+                      Hubungi admin anda untuk mengubah username atau password.
                     </FormDescription>
                   )}
                   <FormMessage />
@@ -299,9 +299,9 @@ export function ProfileForm() {
               name="phone_number"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Phone Number</FormLabel>
+                  <FormLabel>Nomor Telepon</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Enter your phone number" />
+                    <Input {...field} placeholder="Masukkan nomor telepon anda" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -318,13 +318,13 @@ export function ProfileForm() {
                     <Input
                       {...field}
                       type="password"
-                      placeholder={isStaff ? "Contact admin to change password" : "Enter new password (leave blank to keep current)"}
+                      placeholder={isStaff ? "Hubungi admin untuk mengubah password" : "Masukkan password baru (biarkan kosong jika tidak ingin mengubah)"}
                       disabled={isStaff}
                     />
                   </FormControl>
                   {isStaff && (
                     <FormDescription>
-                      Contact your admin to change your password.
+                      Hubungi admin anda untuk mengubah username atau password.
                     </FormDescription>
                   )}
                   <FormMessage />
@@ -334,7 +334,7 @@ export function ProfileForm() {
 
             <Button type="submit" disabled={isLoading} isLoading={isLoading} className="w-full">
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Update Profile
+              Ubah Profile
             </Button>
           </form>
         </Form>

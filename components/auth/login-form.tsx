@@ -36,20 +36,20 @@ export function LoginForm({
             // Map NextAuth error codes to user-friendly messages
             let errorMessage = "An error occurred";
             switch (res.error) {
-                case "CredentialsSignin":
-                    errorMessage = "Invalid username or password";
-                    break;
-                case "Configuration":
-                    errorMessage = "Server configuration error";
-                    break;
-                case "AccessDenied":
-                    errorMessage = "Access denied";
-                    break;
-                case "Verification":
-                    errorMessage = "Verification failed";
-                    break;
-                default:
-                    errorMessage = "Authentication failed";
+              case "CredentialsSignin":
+                errorMessage = "Nama pengguna atau kata sandi tidak valid";
+                break;
+              case "Configuration":
+                errorMessage = "Kesalahan konfigurasi server";
+                break;
+              case "AccessDenied":
+                errorMessage = "Akses ditolak";
+                break;
+              case "Verification":
+                errorMessage = "Verifikasi gagal";
+                break;
+              default:
+                errorMessage = "Otentikasi gagal";
             }
 
             setAuthError(errorMessage);
@@ -58,9 +58,9 @@ export function LoginForm({
             window.location.href = "/dashboard";
         } else {
             // Handle unexpected cases
-            setAuthError("An unexpected error occurred");
-            toast.error("Login failed", {
-                description: "An unexpected error occurred. Please try again.",
+            setAuthError("Terjadi kesalahan yang tidak terduga");
+            toast.error("Login gagal", {
+              description: "Terjadi kesalahan yang tidak terduga. Silakan coba lagi.",
             });
         }
     };
@@ -71,9 +71,9 @@ export function LoginForm({
             onSubmit={handleSubmit(onSubmit)}
             {...props}>
             <div className="flex flex-col items-center gap-2 text-center">
-                <h1 className="text-2xl font-bold">Login to your account</h1>
+                <h1 className="text-2xl font-bold">Login ke akun anda</h1>
                 <p className="text-muted-foreground text-sm text-balance">
-                    Enter your credentials first to access the app
+
                 </p>
             </div>
             <div className="grid gap-6">
@@ -117,7 +117,7 @@ export function LoginForm({
                 </Button>
             </div>
             <div className="text-center text-sm">
-                Don&apos;t have an account? Ask your administrator to create one for you.
+                Belum punya akun? Silahkan kontak admin untuk membuat akun anda.
             </div>
             {authError && (
                 <p className="text-center text-sm text-red-500">{authError}</p>

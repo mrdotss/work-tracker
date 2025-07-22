@@ -13,25 +13,25 @@ interface FeatureProps {
 import Image from 'next/image'
 
 const Feature = ({
-  heading = "A better way to track work records",
-  features = [
-    {
-      id: "feature-1",
-      title: "Employee Task Management",
-      subtitle: "FOR MANAGERS",
-      description:
-        "Monitor and track employee tasks with real-time updates. Assign tasks, set deadlines, and ensure accountability with our comprehensive task management system.",
-      image: "/task-list-home-icon.png",
-    },
-    {
-      id: "feature-2",
-      title: "Approval & Proof System",
-      subtitle: "FOR EMPLOYEES",
-      description:
-        "Submit work proof and get approvals seamlessly. Upload documents, images, and progress updates to validate completed tasks and maintain transparency.",
-      image: "/approval-home-icon.png",
-    },
-  ],
+ heading = "Cara yang lebih baik untuk melacak catatan kerja",
+ features = [
+   {
+     id: "feature-1",
+     title: "Manajemen Tugas Karyawan",
+     subtitle: "UNTUK MANAGER",
+     description:
+       "Pantau dan lacak tugas karyawan dengan pembaruan waktu nyata. Tetapkan tugas, atur tenggat waktu, dan pastikan akuntabilitas dengan sistem manajemen tugas kami yang komprehensif.",
+     image: "/task-list-home-icon.png",
+   },
+   {
+     id: "feature-2",
+     title: "Sistem Persetujuan & Bukti",
+     subtitle: "UNTUK KARYAWAN",
+     description:
+       "Kirim bukti kerja dan dapatkan persetujuan dengan mudah. Unggah dokumen, gambar, dan pembaruan kemajuan untuk memvalidasi tugas yang selesai dan menjaga transparansi.",
+     image: "/approval-home-icon.png",
+   },
+ ],
 }: FeatureProps) => {
   return (
     <section className="py-32">

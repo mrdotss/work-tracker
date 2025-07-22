@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "next-auth/next"
-import { PrismaClient } from "@prisma/client"
-import bcrypt from "bcrypt"
-import { authOptions } from "@/lib/auth"
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt";
+import { authOptions } from "@/lib/auth";
 
 const prisma = new PrismaClient()
 

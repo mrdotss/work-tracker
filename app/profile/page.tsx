@@ -24,9 +24,9 @@ export default function ProfilePage() {
             <div className="mx-auto max-w-2xl">
               <div className="space-y-6">
                 <div>
-                  <h1 className="text-2xl font-bold">Profile Settings</h1>
+                  <h1 className="text-2xl font-bold">Pengaturan Akun</h1>
                   <p className="text-muted-foreground">
-                    Manage your profile information and settings.
+                    Atur informasi dan pengaturan akun anda di sini.
                   </p>
                 </div>
                 <ProfileForm />

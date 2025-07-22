@@ -93,14 +93,14 @@ export function NavUser() {
               <Link href="/profile" passHref>
                 <DropdownMenuItem>
                   <IconUserCircle />
-                  Account
+                  Akun
                 </DropdownMenuItem>
               </Link>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout}>
               <IconLogout />
-              Log out
+              Logout
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

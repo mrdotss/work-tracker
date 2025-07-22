@@ -55,6 +55,19 @@ export async function middleware(req: NextRequest) {
             url.pathname = "/dashboard";
             return NextResponse.redirect(url);
         }
+
+        // Restrict access to dashboard APIs based on role
+        if (
+            userRole === "STAFF" &&
+            pathname === "/api/dashboard/admin"
+        ) {
+            return new NextResponse(JSON.stringify({ error: "Forbidden" }), {
+                status: 403,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+        }
     }
 
     return NextResponse.next();

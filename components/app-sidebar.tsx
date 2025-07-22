@@ -11,7 +11,7 @@ import {
 import { useSession } from "next-auth/react"
 
 import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
+// import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
@@ -67,13 +67,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       : []),
   ]
 
-  const navSecondary = [
-    {
-      title: "Settings",
-      url: "/settings",
-      icon: IconSettings,
-    },
-  ]
+  // const navSecondary = [
+  //   {
+  //     title: "Settings",
+  //     url: "/settings",
+  //     icon: IconSettings,
+  //   },
+  // ]
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -94,7 +94,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={navMain} />
-        <NavSecondary items={navSecondary} className="mt-auto" />
+        {/*<NavSecondary items={navSecondary} className="mt-auto" />*/}
       </SidebarContent>
       <SidebarFooter>
         <NavUser />

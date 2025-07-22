@@ -22,11 +22,9 @@ interface FooterProps {
 
 const defaultSections = [
   {
-    title: "Support",
+    title: "Bantuan",
     links: [
-      { name: "Help Center", href: "#" },
-      { name: "Contact Us", href: "#" },
-      { name: "Documentation", href: "#" },
+      { name: "Contact Us", href: "mailto:mayer@fatechid.com" },
     ],
   },
 ];
@@ -44,8 +42,8 @@ const Footer = ({
     title: "Work Tracker",
   },
   sections = defaultSections,
-  description = "Work Tracker is a comprehensive solution for tracking employee tasks with approval and proof systems to ensure productivity and accountability.",
-  copyright = "© 2025 Work Tracker. All rights reserved.",
+  description = "Work Tracker adalah solusi komprehensif untuk melacak tugas karyawan dengan sistem persetujuan dan bukti guna memastikan produktivitas dan akuntabilitas.",
+  copyright = "© 2025 Work Tracker. Hak cipta dilindungi undang-undang.",
   legalLinks = defaultLegalLinks,
 }: FooterProps) => {
   return (

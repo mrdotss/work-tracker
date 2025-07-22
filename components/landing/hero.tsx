@@ -27,19 +27,19 @@ const Hero = () => {
             </div>
             <div>
               <h1 className="mb-6 text-2xl font-bold tracking-tight text-pretty lg:text-5xl">
-                Track your employee work with{" "}
+                Lacak pekerjaan karyawan Anda dengan{" "}
                 <span className="text-primary">Work Tracker</span>
               </h1>
               <p className="mx-auto max-w-3xl text-muted-foreground lg:text-xl">
-                Work Tracker is a comprehensive solution designed to help you
-                monitor and manage employee tasks efficiently. Track employee task
-                works with some approval and proof system to ensure productivity
-                and accountability.
+                Work Tracker adalah solusi komprehensif yang dirancang untuk membantu Anda
+                memantau dan mengelola tugas karyawan secara efisien. Lacak pekerjaan
+                karyawan dengan sistem persetujuan dan bukti untuk memastikan produktivitas
+                dan akuntabilitas.
               </p>
             </div>
             <div className="mt-6 flex justify-center gap-3">
               <Button className="shadow-sm transition-shadow hover:shadow">
-                <a href="/login">Sign in</a>
+                <a href="/login">Login</a>
               </Button>
             </div>
           </div>
