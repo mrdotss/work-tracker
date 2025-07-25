@@ -21,6 +21,7 @@ interface WorkcheckHistory {
   Unit: {
     name: string;
     type: string;
+    number_plate: string | null;
   };
   Approval: {
     is_approved: boolean | null;
@@ -41,6 +42,7 @@ interface WorkcheckDetails {
   Unit: {
     name: string;
     type: string;
+    number_plate: string | null;
   };
   WorkcheckItems: {
     id: string;
@@ -169,7 +171,7 @@ export function StaffHistory({ onEditWorkcheck }: StaffHistoryProps) {
             <DatePicker
                 date={selectedDate}
                 onDateChange={handleDateChange}
-                placeholder="Filter by date"
+                placeholder="Filter tanggal"
                 className="w-48"
             />
             {selectedDate && (
@@ -189,10 +191,10 @@ export function StaffHistory({ onEditWorkcheck }: StaffHistoryProps) {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="approved">Approved</SelectItem>
-              <SelectItem value="rejected">Rejected</SelectItem>
+              <SelectItem value="all">Semua Status</SelectItem>
+              <SelectItem value="pending">Menunggu</SelectItem>
+              <SelectItem value="approved">Disetujui</SelectItem>
+              <SelectItem value="rejected">Ditolak</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -203,14 +205,16 @@ export function StaffHistory({ onEditWorkcheck }: StaffHistoryProps) {
           className="flex items-center gap-2"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-          Refresh
+          Muat Ulang
         </Button>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>My Workcheck History</CardTitle>
-          <CardDescription>View your submitted workcheck records and their approval status</CardDescription>
+          <CardTitle>History Pengecekan Saya</CardTitle>
+          <CardDescription>
+            Daftar semua pengecekan yang telah anda lakukan, termasuk status persetujuan.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {loading ? (
@@ -221,19 +225,19 @@ export function StaffHistory({ onEditWorkcheck }: StaffHistoryProps) {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Date</TableHead>
+                  <TableHead>Tanggal</TableHead>
                   <TableHead>Unit</TableHead>
-                  <TableHead>Hours Meter</TableHead>
+                  <TableHead>Kilometer</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Review Comments</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead>Komentar</TableHead>
+                  <TableHead>Aksi</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {workchecks.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                      No workcheck history found
+                      Tidak ada pengecekan yang ditemukan
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -245,6 +249,11 @@ export function StaffHistory({ onEditWorkcheck }: StaffHistoryProps) {
                         <div className="text-sm text-muted-foreground">
                           {workcheck.Unit.type}
                         </div>
+                        {workcheck.Unit.number_plate && (
+                          <div className="text-sm text-muted-foreground">
+                            {workcheck.Unit.number_plate}
+                          </div>
+                        )}
                       </TableCell>
                       <TableCell>{workcheck.hours_meter || "N/A"}</TableCell>
                       <TableCell>
@@ -266,7 +275,7 @@ export function StaffHistory({ onEditWorkcheck }: StaffHistoryProps) {
                             &ldquo;{workcheck.Approval.comments}&rdquo;
                           </div>
                         ) : (
-                          <span className="text-muted-foreground">No comments</span>
+                          <span className="text-muted-foreground">Tidak ada komentar</span>
                         )}
                       </TableCell>
                       <TableCell>
@@ -308,7 +317,7 @@ export function StaffHistory({ onEditWorkcheck }: StaffHistoryProps) {
       }}>
         <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Workcheck Details</DialogTitle>
+            <DialogTitle>Detail Pengecekan</DialogTitle>
           </DialogHeader>
           {viewWorkcheckDialog.loading ? (
             <div className="flex justify-center py-8">
@@ -321,18 +330,23 @@ export function StaffHistory({ onEditWorkcheck }: StaffHistoryProps) {
                   <strong>Unit:</strong> {viewWorkcheckDialog.workcheck.Unit.name}
                 </div>
                 <div>
-                  <strong>Type:</strong> {viewWorkcheckDialog.workcheck.Unit.type}
+                  <strong>Tipe:</strong> {viewWorkcheckDialog.workcheck.Unit.type}
+                </div>
+                {viewWorkcheckDialog.workcheck.Unit.number_plate && (
+                  <div>
+                    <strong>Plat Nomor:</strong> {viewWorkcheckDialog.workcheck.Unit.number_plate}
+                  </div>
+                )}
+                <div>
+                  <strong>Tanggal:</strong> {formatDate(viewWorkcheckDialog.workcheck.created_at)}
                 </div>
                 <div>
-                  <strong>Date:</strong> {formatDate(viewWorkcheckDialog.workcheck.created_at)}
-                </div>
-                <div>
-                  <strong>Hours Meter:</strong> {viewWorkcheckDialog.workcheck.hours_meter || "N/A"}
+                  <strong>Kilometer:</strong> {viewWorkcheckDialog.workcheck.hours_meter || "N/A"}
                 </div>
               </div>
 
               <div>
-                <strong>Check Items:</strong>
+                <strong>Checlist pengecekan:</strong>
                 <div className="space-y-3 mt-2">
                   {viewWorkcheckDialog.workcheck.WorkcheckItems.map((item) => (
                     <div key={item.id} className="p-4 border rounded-md">
@@ -346,12 +360,12 @@ export function StaffHistory({ onEditWorkcheck }: StaffHistoryProps) {
                       </div>
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
-                          <strong>Action:</strong> {item.actions.join(", ") || "N/A"}
+                          <strong>Aksi:</strong> {item.actions.join(", ") || "N/A"}
                         </div>
                       </div>
                       {item.note && (
                         <div className="mt-2">
-                          <strong>Notes:</strong>
+                          <strong>Catatan:</strong>
                           <p className="text-sm text-muted-foreground">{item.note}</p>
                         </div>
                       )}
@@ -386,7 +400,7 @@ export function StaffHistory({ onEditWorkcheck }: StaffHistoryProps) {
 
               {viewWorkcheckDialog.workcheck.Approval && (
                 <div>
-                  <strong>Review History:</strong>
+                  <strong>Hasil Review:</strong>
                   <div className="mt-2 space-y-2">
                       <div className="p-3 border rounded-md">
                         <div className="flex justify-between items-start">
@@ -415,7 +429,7 @@ export function StaffHistory({ onEditWorkcheck }: StaffHistoryProps) {
                         </div>
                         {viewWorkcheckDialog.workcheck.Approval.comments && (
                             <div className="mt-2 text-sm">
-                              <strong>Comments:</strong> {viewWorkcheckDialog.workcheck.Approval.comments}
+                              <strong>Komentar:</strong> {viewWorkcheckDialog.workcheck.Approval.comments}
                             </div>
                         )}
                       </div>
@@ -438,17 +452,17 @@ export function StaffHistory({ onEditWorkcheck }: StaffHistoryProps) {
           onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
           disabled={currentPage === 1}
         >
-          Previous
+          Sebelumnnya
         </Button>
         <span className="flex items-center px-4">
-          Page {currentPage} of {totalPages}
+          Halaman {currentPage} dari {totalPages}
         </span>
         <Button
           variant="outline"
           onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
           disabled={currentPage === totalPages}
         >
-          Next
+          Selanjutnya
         </Button>
       </div>
     </div>

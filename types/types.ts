@@ -17,6 +17,7 @@ export interface Unit {
   id: string
   name: string
   type: string
+  number_plate: string | null
   is_deleted: boolean
   created_at: string
   updated_at: string
@@ -74,6 +75,7 @@ export interface WorkcheckWithUser {
   Unit: {
     name: string;
     type: string;
+    number_plate: string | null;
   };
   Approval: {
     is_approved: boolean | null;
@@ -100,6 +102,7 @@ export interface WorkcheckDetails {
   Unit: {
     name: string;
     type: string;
+    number_plate: string | null;
   };
   Approval: {
     is_approved: boolean | null;

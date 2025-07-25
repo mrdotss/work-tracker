@@ -45,7 +45,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { toast } from 'sonner';
 import Image from "next/image";
 
@@ -97,6 +97,7 @@ export function TaskRecords({
     action: null,
   });
   const [comments, setComments] = useState('');
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [viewWorkcheckDialog, setViewWorkcheckDialog] =
       useState<ViewWorkcheckDialogState>({
         open: false,
@@ -109,6 +110,14 @@ export function TaskRecords({
     setSelectedDate(date);
     const newDateFilter = date ? date.toISOString().split('T')[0] : '';
     setDateFilter(newDateFilter);
+    
+    // Clear existing timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+    
+    // Immediate refresh for date changes (no debounce needed)
+    onRefresh({ search: searchTerm, status: selectedStatus, date: newDateFilter });
   };
 
   // Export functions
@@ -228,7 +237,7 @@ export function TaskRecords({
 
       if (response.ok) {
         toast.success(
-            `Workcheck ${approvalDialog.action === 'approve' ? 'approved' : 'rejected'} successfully`,
+            `Workcheck ${approvalDialog.action === 'approve' ? 'disetujui' : 'ditolak'} successfully`,
         );
         setApprovalDialog({
           open: false,
@@ -256,9 +265,9 @@ export function TaskRecords({
 
   // Get approval status
   const getApprovalStatus = (workcheck: WorkcheckWithUser) => {
-    if (!workcheck.Approval) return 'pending';
-    if (workcheck.Approval.is_approved === null) return 'pending';
-    return workcheck.Approval.is_approved ? 'approved' : 'rejected';
+    if (!workcheck.Approval) return 'menunggu';
+    if (workcheck.Approval.is_approved === null) return 'menunggu';
+    return workcheck.Approval.is_approved ? 'disetujui' : 'ditolak';
   };
 
   // Check if workcheck can be approved
@@ -277,10 +286,40 @@ export function TaskRecords({
     onRefresh({ search: searchTerm, status: selectedStatus, date: dateFilter });
   }, [onRefresh, searchTerm, selectedStatus, dateFilter]);
 
-  // Update filters when the state changes
-  useEffect(() => {
+  // Only refresh when user explicitly changes filters (not on component mount/re-render)
+  const handleFilterChange = () => {
     handleRefresh();
-  }, [handleRefresh]);
+  };
+
+  // Handle search with debounce
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    
+    // Clear existing timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+    
+    // Set new timeout to debounce search
+    searchTimeoutRef.current = setTimeout(() => {
+      onRefresh({ search: value, status: selectedStatus, date: dateFilter });
+    }, 500);
+  };
+
+  // Handle status change  
+  const handleStatusChange = (value: string) => {
+    setSelectedStatus(value);
+    onRefresh({ search: searchTerm, status: value, date: dateFilter });
+  };
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // View workcheck details
   const viewWorkcheckDetails = async (workcheckId: string) => {
@@ -310,16 +349,16 @@ export function TaskRecords({
         <div className="flex justify-between items-center">
           <div className="flex gap-2">
             <Input
-                placeholder="Search by staff name..."
+                placeholder="Cari berdasarkan nama staff..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => handleSearchChange(e.target.value)}
                 className="w-64"
             />
             <div className="flex items-center gap-1">
               <DatePicker
                   date={selectedDate}
                   onDateChange={handleDateChange}
-                  placeholder="Filter by date"
+                  placeholder="Cari tanggal"
                   className="w-48"
               />
               {selectedDate && (
@@ -334,14 +373,14 @@ export function TaskRecords({
                 </Button>
               )}
             </div>
-            <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-              <SelectTrigger className="w-32">
+            <Select value={selectedStatus} onValueChange={handleStatusChange}>
+              <SelectTrigger className="w-40">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="approved">Approved</SelectItem>
+                <SelectItem value="all">Semua Status</SelectItem>
+                <SelectItem value="pending">Menunggu</SelectItem>
+                <SelectItem value="approved">Disetujui</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -379,20 +418,20 @@ export function TaskRecords({
 
         <Card>
           <CardHeader>
-            <CardTitle>Work Check Records</CardTitle>
-            <CardDescription>View and approve staff task entries</CardDescription>
+            <CardTitle>Catatan Pengecekan</CardTitle>
+            <CardDescription>Melihat dan menyetujui entri tugas staf</CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Staff Name</TableHead>
+                  <TableHead>Tanggal</TableHead>
+                  <TableHead>Nama Staff</TableHead>
                   <TableHead>Unit</TableHead>
-                  <TableHead>Hours Meter</TableHead>
+                  <TableHead>Meteran Jam</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Review Status</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead>Aksi</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -412,14 +451,19 @@ export function TaskRecords({
                         <div className="text-sm text-muted-foreground">
                           {workcheck.Unit.type}
                         </div>
+                        {workcheck.Unit.number_plate && (
+                          <div className="text-sm text-muted-foreground">
+                            {workcheck.Unit.number_plate}
+                          </div>
+                        )}
                       </TableCell>
                       <TableCell>{workcheck.hours_meter || 'N/A'}</TableCell>
                       <TableCell>
                         <Badge
                             variant={
-                              getApprovalStatus(workcheck) === 'approved'
+                              getApprovalStatus(workcheck) === 'disetujui'
                                   ? 'default'
-                                  : getApprovalStatus(workcheck) === 'rejected'
+                                  : getApprovalStatus(workcheck) === 'ditolak'
                                       ? 'destructive'
                                       : 'secondary'
                             }
@@ -595,7 +639,7 @@ export function TaskRecords({
         >
           <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Workcheck Details</DialogTitle>
+              <DialogTitle>Detail Pengecekan</DialogTitle>
             </DialogHeader>
             {viewWorkcheckDialog.loading ? (
                 <div className="flex justify-center py-4">
@@ -614,17 +658,17 @@ export function TaskRecords({
                       {viewWorkcheckDialog.workcheck.Unit.name}
                     </div>
                     <div>
-                      <strong>Date:</strong>{' '}
+                      <strong>Tanggal:</strong>{' '}
                       {formatDate(viewWorkcheckDialog.workcheck.created_at)}
                     </div>
                     <div>
-                      <strong>Hours Meter:</strong>{' '}
+                      <strong>Meteran Jam:</strong>{' '}
                       {viewWorkcheckDialog.workcheck.hours_meter || 'N/A'}
                     </div>
                   </div>
 
                   <div>
-                    <strong>Check Items:</strong>
+                    <strong>Checklist pengecekan:</strong>
                     <div className="space-y-3 mt-2">
                       {viewWorkcheckDialog.workcheck.WorkcheckItems.map((item) => (
                           <div key={item.id} className="p-4 border rounded-md">
@@ -638,12 +682,12 @@ export function TaskRecords({
                             </div>
                             <div className="grid grid-cols-2 gap-4 text-sm">
                               <div>
-                                <strong>Actions:</strong> {item.actions?.join(", ") || 'N/A'}
+                                <strong>Aksi:</strong> {item.actions?.join(", ") || 'N/A'}
                               </div>
                             </div>
                             {item.note && (
                                 <div className="mt-2">
-                                  <strong>Notes:</strong>
+                                  <strong>Catatan:</strong>
                                   <p className="text-sm text-muted-foreground">
                                     {item.note}
                                   </p>
@@ -651,7 +695,7 @@ export function TaskRecords({
                             )}
                             {item.Images && item.Images.length > 0 && (
                                 <div className="mt-2">
-                                  <strong>Images:</strong>
+                                  <strong>Bukti Gambar:</strong>
                                   <div className="flex gap-2 mt-1 flex-wrap">
                                     {item.Images.map((image: { id: string; file_name: string | null; uploaded_at: string | null }, idx: number) => (
                                         <a
@@ -680,7 +724,7 @@ export function TaskRecords({
 
                   {viewWorkcheckDialog.workcheck.Approval && (
                       <div>
-                        <strong>Approval Status:</strong>
+                        <strong>Status Persetujuan:</strong>
                         <div className="mt-2 space-y-2">
                           <div className="p-3 border rounded-md">
                             <div className="flex justify-between items-start">
@@ -704,15 +748,15 @@ export function TaskRecords({
                                   }
                               >
                                 {viewWorkcheckDialog.workcheck.Approval.is_approved
-                                    ? 'Approved'
+                                    ? 'Disetujui'
                                     : viewWorkcheckDialog.workcheck.Approval.is_approved === false
-                                        ? 'Rejected'
-                                        : 'Pending'}
+                                        ? 'Ditolak'
+                                        : 'Menunggu Persetujuan'}
                               </Badge>
                             </div>
                             {viewWorkcheckDialog.workcheck.Approval.comments && (
                                 <div className="mt-2 text-sm">
-                                  <strong>Comments:</strong> {viewWorkcheckDialog.workcheck.Approval.comments}
+                                  <strong>Komentar:</strong> {viewWorkcheckDialog.workcheck.Approval.comments}
                                 </div>
                             )}
                           </div>
@@ -722,7 +766,7 @@ export function TaskRecords({
                 </div>
             ) : (
                 <div className="p-4 text-sm text-muted-foreground">
-                  Workcheck details not found.
+                  Detail pengecekan tidak ditemukan.
                 </div>
             )}
           </DialogContent>
@@ -735,17 +779,17 @@ export function TaskRecords({
               onClick={() => onPageChange(Math.max(1, currentPage - 1))}
               disabled={currentPage === 1}
           >
-            Previous
+            Sebelumnya
           </Button>
           <span className="flex items-center px-4">
-          Page {currentPage} of {totalPages}
+          Halaman {currentPage} dari {totalPages}
         </span>
           <Button
               variant="outline"
               onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
               disabled={currentPage === totalPages}
           >
-            Next
+            Selanjutnya
           </Button>
         </div>
       </div>

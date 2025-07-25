@@ -35,7 +35,8 @@ export async function GET(
         Unit: {
           select: {
             name: true,
-            type: true
+            type: true,
+            number_plate: true
           }
         },
         WorkcheckItems: {

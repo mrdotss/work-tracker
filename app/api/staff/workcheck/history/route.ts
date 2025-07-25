@@ -57,6 +57,7 @@ export async function GET(request: NextRequest) {
           select: {
             name: true
             type: true
+            number_plate: true
           }
         }
         Approval: {
@@ -79,7 +80,8 @@ export async function GET(request: NextRequest) {
         Unit: {
           select: {
             name: true,
-            type: true
+            type: true,
+            number_plate: true
           }
         },
         Approval: {

@@ -38,26 +38,26 @@ export function StaffDashboardWidgets({ data }: StaffDashboardWidgetsProps) {
       {/* Today's Vehicle Status */}
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Today&apos;s Vehicles</CardDescription>
+          <CardDescription>Unit Hari Ini</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
             {vehicleStatus.length} {vehicleStatus.length === 1 ? 'Vehicle' : 'Vehicles'}
           </CardTitle>
           <CardAction>
             <Badge variant={todayFinished ? "default" : "destructive"}>
               {todayFinished ? <IconCheck className="size-3" /> : <IconClock className="size-3" />}
-              {todayFinished ? "Complete" : "Pending"}
+              {todayFinished ? "Selesai" : "Menunggu"}
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            {todayFinished ? "All daily checks completed" : "Have I finished my daily check yet?"}
+            {todayFinished ? "Pemeriksaan harian selesai" : "Apakah saya sudah menyelesaikan pemeriksaan hari ini?"}
             {todayFinished ? <IconCheck className="size-4" /> : <IconClock className="size-4" />}
           </div>
           <div className="text-muted-foreground">
             {vehicleStatus.length > 0 
               ? `${vehicleStatus.filter(v => v.isSubmitted).length}/${vehicleStatus.length} submitted`
-              : "No vehicles assigned today"
+              : "Tidak ada kendaraan yang akan dicek"
             }
           </div>
         </CardFooter>
@@ -73,19 +73,19 @@ export function StaffDashboardWidgets({ data }: StaffDashboardWidgetsProps) {
           <CardAction>
             <Badge variant={openTasks.length > 0 ? "secondary" : "default"}>
               <IconClock className="size-3" />
-              {openTasks.length > 0 ? "Pending" : "All Clear"}
+              {openTasks.length > 0 ? "Menunggu" : "Selesai"}
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Extra vehicles they&apos;re covering today
+            Unit tambahan yang mereka liput hari ini
             <IconClock className="size-4" />
           </div>
           <div className="text-muted-foreground">
             {openTasks.length > 0 
-              ? `${openTasks.filter(t => !t.isSubmitted).length} incomplete, ${openTasks.filter(t => t.isSubmitted && t.approvalStatus === null).length} pending approval`
-              : "No pending tasks"
+              ? `${openTasks.filter(t => !t.isSubmitted).length} belum selesai, ${openTasks.filter(t => t.isSubmitted && t.approvalStatus === null).length} menunggu persetujuan`
+              : "Tidak ada tugas yang tertunda"
             }
           </div>
         </CardFooter>
@@ -101,23 +101,23 @@ export function StaffDashboardWidgets({ data }: StaffDashboardWidgetsProps) {
           <CardAction>
             <Badge variant={streak >= 5 ? "default" : streak >= 3 ? "secondary" : "destructive"}>
               <IconTrendingUp className="size-3" />
-              {streak >= 5 ? "Excellent" : streak >= 3 ? "Good" : "Needs Work"}
+              {streak >= 5 ? "Sangat Baik" : streak >= 3 ? "Baik" : "Butuh Perbaikan"}
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Personal consistency (last 7 days)
+            Konsistensi Streak (7 hari terakhir)
             <IconTrendingUp className="size-4" />
           </div>
           <div className="text-muted-foreground">
             {streak === 7 
-              ? "Perfect week! Keep it up!"
+              ? "Minggu yang sempurna! Teruskan!"
               : streak >= 5
-              ? "Great consistency this week"
+              ? "Konsistensi yang hebat minggu ini"
               : streak >= 3
-              ? "Good momentum building"
-              : "Focus on daily completion"
+              ? "Momentum yang baik sedang dibangun"
+              : "Fokus pada penyelesaian harian"
             }
           </div>
         </CardFooter>

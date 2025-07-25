@@ -58,6 +58,7 @@ export async function GET() {
           id: workcheck.Unit.id,
           name: workcheck.Unit.name,
           type: workcheck.Unit.type,
+          number_plate: workcheck.Unit.number_plate,
         },
         WorkcheckItems: workcheck.WorkcheckItems.map(item => ({
           id: item.id,

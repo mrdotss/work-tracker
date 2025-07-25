@@ -42,24 +42,24 @@ export default function StaffPage() {
             <div className="mx-auto max-w-6xl">
               <div className="space-y-6">
                 <div>
-                  <h1 className="text-2xl font-bold">Staff Portal</h1>
+                  <h1 className="text-2xl font-bold">Portal Staff</h1>
                   <p className="text-muted-foreground">
-                    Manage your daily vehicle inspections and view your submission history.
+                    Kelola inspeksi unit harian dan lihat riwayat inpeksi anda
                   </p>
                 </div>
 
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                   <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="workcheck">Daily Workcheck</TabsTrigger>
-                    <TabsTrigger value="history">My History</TabsTrigger>
+                    <TabsTrigger value="workcheck">Pemeriksaan Harian</TabsTrigger>
+                    <TabsTrigger value="history">Riwayat Saya</TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="workcheck" className="mt-6">
                     <div className="space-y-4">
                       <div>
-                        <h2 className="text-xl font-semibold">Daily Vehicle Inspection</h2>
+                        <h2 className="text-xl font-semibold">Inspeksi Unit Harian</h2>
                         <p className="text-muted-foreground">
-                          Complete your daily vehicle inspection checklist with required proof photos.
+                          Selesaikan pemeriksaan unit harian anda dengan foto bukti yang diperlukan.
                         </p>
                       </div>
                       <WorkcheckForm

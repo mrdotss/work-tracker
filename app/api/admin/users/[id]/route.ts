@@ -127,7 +127,7 @@ export async function DELETE(
       data: { updated_at: new Date() }
     });
 
-    return NextResponse.json({ message: "User deactivated successfully" });
+    return NextResponse.json({ message: "Pengnonatifan User Sukses" });
   } catch (error) {
     console.error("Error deleting user:", error);
     return NextResponse.json(

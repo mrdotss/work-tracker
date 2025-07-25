@@ -42,6 +42,15 @@ export const authOptions: AuthOptions = {
                         return null;
                     }
 
+                    // Update last_login timestamp
+                    await prisma.user.update({
+                        where: { id: user.id },
+                        data: { 
+                            last_login: new Date(),
+                            updated_at: new Date()
+                        }
+                    });
+
                     // return complete user data to match your schema
                     return {
                         id: user.id,
@@ -60,6 +69,25 @@ export const authOptions: AuthOptions = {
         }),
     ],
     callbacks: {
+        async signIn({ user, account, profile, email, credentials }) {
+            // This runs after successful authentication but before JWT creation
+            // Additional last_login update as a safety measure
+            if (user?.id) {
+                try {
+                    await prisma.user.update({
+                        where: { id: user.id },
+                        data: { 
+                            last_login: new Date(),
+                            updated_at: new Date()
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error updating last_login in signIn callback:', error);
+                    // Don't prevent login if this fails
+                }
+            }
+            return true;
+        },
         async jwt({ token, user, trigger }) {
             // Initial sign in
             if (user) {

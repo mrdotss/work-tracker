@@ -97,7 +97,7 @@ export function DashboardWidgets() {
     return (
       <div className="flex items-center justify-center p-8">
         <div className="text-center">
-          <p className="text-destructive mb-2">Error loading dashboard data</p>
+          <p className="text-destructive mb-2">Error ketika memuat data dashboard</p>
           <p className="text-sm text-muted-foreground">{error}</p>
         </div>
       </div>
@@ -107,7 +107,7 @@ export function DashboardWidgets() {
   if (!session?.user) {
     return (
       <div className="flex items-center justify-center p-8">
-        <p className="text-muted-foreground">Please log in to view dashboard</p>
+        <p className="text-muted-foreground">Silahkan login untuk melihat dashboard</p>
       </div>
     );
   }
@@ -118,8 +118,8 @@ export function DashboardWidgets() {
         <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
         <p className="text-muted-foreground">
           {session.user.role === "ADMIN" 
-            ? "Admin overview of system operations and metrics"
-            : "Your daily work status and recent activity"
+            ? "Gambaran admin tentang operasional dan metrik sistem"
+            : "Status kerja harian anda dan aktivitas terbaru"
           }
         </p>
       </div>
@@ -130,7 +130,7 @@ export function DashboardWidgets() {
         <StaffDashboardWidgets data={staffData} />
       ) : (
         <div className="flex items-center justify-center p-8">
-          <p className="text-muted-foreground">No dashboard data available</p>
+          <p className="text-muted-foreground">Data dashboard tidak ada</p>
         </div>
       )}
     </div>

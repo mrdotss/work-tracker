@@ -40,11 +40,12 @@ model User {
 }
 
 model Unit {
-  id         String    @id @default(uuid()) @db.Uuid
-  name       String?   @db.VarChar(255)
-  type       String?   @db.VarChar(50)
-  is_deleted Boolean   @default(false)
-  deleted_at DateTime? @db.Timestamp(6)
+  id            String    @id @default(uuid()) @db.Uuid
+  name          String?   @db.VarChar(255)
+  type          String?   @db.VarChar(50)
+  number_plate  String?   @db.VarChar(50)
+  is_deleted    Boolean   @default(false)
+  deleted_at    DateTime? @db.Timestamp(6)
 
   Workchecks Workcheck[]
 

@@ -68,23 +68,23 @@ export function AdminDashboardWidgets({ data }: AdminDashboardWidgetsProps) {
       {/* Daily Throughput */}
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Daily Throughput</CardDescription>
+          <CardDescription>Throughput Harian</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
             {checksCompletedToday}
           </CardTitle>
           <CardAction>
             <Badge variant={checksCompletedToday > 0 ? "default" : "secondary"}>
               <IconCheck className="size-3" />
-              {checksCompletedToday > 0 ? "Active" : "None"}
+              {checksCompletedToday > 0 ? "Aktif" : "Tidak ada"}
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Checks completed today <IconCheck className="size-4" />
+            Pemeriksaan yang selesai hari ini <IconCheck className="size-4" />
           </div>
           <div className="text-muted-foreground">
-            Track daily inspection volume
+            Lacak volume inspeksi harian
           </div>
         </CardFooter>
       </Card>
@@ -92,23 +92,23 @@ export function AdminDashboardWidgets({ data }: AdminDashboardWidgetsProps) {
       {/* Review Workload */}
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Review Workload</CardDescription>
+          <CardDescription>Perlu Di Review</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
             {pendingApprovals}
           </CardTitle>
           <CardAction>
             <Badge variant={pendingApprovals > 10 ? "destructive" : pendingApprovals > 0 ? "secondary" : "default"}>
               <IconClock className="size-3" />
-              {pendingApprovals > 10 ? "High" : pendingApprovals > 0 ? "Pending" : "Clear"}
+              {pendingApprovals > 10 ? "Tinggi" : pendingApprovals > 0 ? "Tertunda" : "Baik"}
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Pending approvals <IconClock className="size-4" />
+            Persetujuan tertunda <IconClock className="size-4" />
           </div>
           <div className="text-muted-foreground">
-            {pendingApprovals > 0 ? "Requires admin attention" : "All caught up"}
+            {pendingApprovals > 0 ? "Perhatian dibutuhkan" : "Sudah semua"}
           </div>
         </CardFooter>
       </Card>
@@ -116,24 +116,24 @@ export function AdminDashboardWidgets({ data }: AdminDashboardWidgetsProps) {
       {/* Issue Rate */}
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Issue Rate (30 days)</CardDescription>
+          <CardDescription>Tingkatan Laporan (30 hari)</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
             {issueRate.toFixed(1)}%
           </CardTitle>
           <CardAction>
             <Badge variant={issueRate > 20 ? "destructive" : issueRate > 10 ? "secondary" : "default"}>
               {issueRate > 10 ? <IconTrendingUp className="size-3" /> : <IconTrendingDown className="size-3" />}
-              {issueRate > 20 ? "High" : issueRate > 10 ? "Medium" : "Low"}
+              {issueRate > 20 ? "Tinggi" : issueRate > 10 ? "Sedang" : "Rendah"}
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Action items reported
+            Tindakan yang dilaporkan
             {issueRate > 10 ? <IconTrendingUp className="size-4" /> : <IconTrendingDown className="size-4" />}
           </div>
           <div className="text-muted-foreground">
-            Percentage of checks with issues
+            Persentase cek yang bermasalah
           </div>
         </CardFooter>
       </Card>
@@ -141,14 +141,14 @@ export function AdminDashboardWidgets({ data }: AdminDashboardWidgetsProps) {
       {/* Top Failing Items */}
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Top Failing Items</CardDescription>
+          <CardDescription>Paling Banyak Gagal</CardDescription>
           <CardTitle className="text-lg font-semibold">
-            Where to act
+            Di mana harus bertindak
           </CardTitle>
           <CardAction>
             <Badge variant={topFailingItems.length > 0 ? "destructive" : "default"}>
               <IconAlertTriangle className="size-3" />
-              {topFailingItems.length > 0 ? "Issues Found" : "All Good"}
+              {topFailingItems.length > 0 ? "Masalah Ditemukan" : "Semua Baik"}
             </Badge>
           </CardAction>
         </CardHeader>
@@ -163,7 +163,7 @@ export function AdminDashboardWidgets({ data }: AdminDashboardWidgetsProps) {
               </div>
             ))
           ) : (
-            <div className="text-muted-foreground">No failing items found</div>
+            <div className="text-muted-foreground">Tidak ada item yang gagal ditemukan</div>
           )}
         </CardFooter>
       </Card>
@@ -171,23 +171,23 @@ export function AdminDashboardWidgets({ data }: AdminDashboardWidgetsProps) {
       {/* Time to Approve */}
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Process Bottlenecks</CardDescription>
+          <CardDescription>Hambatan Proses</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {avgTimeToApprove.toFixed(1)}h
+            {avgTimeToApprove.toFixed(1)} jam
           </CardTitle>
           <CardAction>
             <Badge variant={avgTimeToApprove > 24 ? "destructive" : avgTimeToApprove > 8 ? "secondary" : "default"}>
               <IconClock className="size-3" />
-              {avgTimeToApprove > 24 ? "Slow" : avgTimeToApprove > 8 ? "Medium" : "Fast"}
+              {avgTimeToApprove > 24 ? "Lambat" : avgTimeToApprove > 8 ? "Sedang" : "Cepat"}
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Average time to approve <IconClock className="size-4" />
+            Rata-rata waktu persetujuan <IconClock className="size-4" />
           </div>
           <div className="text-muted-foreground">
-            Time from submission to approval
+            Waktu dari pengajuan hingga persetujuan
           </div>
         </CardFooter>
       </Card>
@@ -195,41 +195,41 @@ export function AdminDashboardWidgets({ data }: AdminDashboardWidgetsProps) {
       {/* Vehicle Coverage Heat-map */}
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Vehicle Coverage (7 days)</CardDescription>
+          <CardDescription>Cakupan Unit (7 hari)</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
             {coveragePercentage.toFixed(0)}%
           </CardTitle>
           <CardAction>
             <Badge variant={coveragePercentage < 80 ? "destructive" : coveragePercentage < 95 ? "secondary" : "default"}>
               {coveragePercentage < 80 ? <IconAlertTriangle className="size-3" /> : <IconCheck className="size-3" />}
-              {coveragePercentage < 80 ? "Poor" : coveragePercentage < 95 ? "Good" : "Excellent"}
+              {coveragePercentage < 80 ? "Buruk" : coveragePercentage < 95 ? "Baik" : "Sangat Baik"}
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Missed inspections tracking
+            Pelacakan inspeksi yang terlewat
             {uncoveredVehicles > 0 ? <IconAlertTriangle className="size-4" /> : <IconCheck className="size-4" />}
           </div>
           <div className="flex items-center justify-between w-full">
             <div className="text-muted-foreground">
               {uncoveredVehicles > 0 
-                ? `${uncoveredVehicles} vehicles need attention`
-                : "All vehicles covered"
+                ? `${uncoveredVehicles} unit perlu perhatian`
+                : "Semua unit tercover"
               }
             </div>
             <Dialog>
               <DialogTrigger asChild>
                 <Button variant="outline" size="sm">
                   <IconEye className="size-3 mr-1" />
-                  View Heat-map
+                  Lihat Heat-map
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-2xl">
+              <DialogContent className="sm:max-w-xl">
                 <DialogHeader>
-                  <DialogTitle>Vehicle Coverage Heat-map</DialogTitle>
+                  <DialogTitle>Heat-map Cakupan Unit</DialogTitle>
                   <DialogDescription>
-                    Daily inspection coverage for all vehicles over the last 7 days
+                    Cakupan inspeksi harian untuk semua unit selama 7 hari terakhir
                   </DialogDescription>
                 </DialogHeader>
                 <VehicleCoverageHeatMap vehicleCoverageData={vehicleCoverageData} />

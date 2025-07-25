@@ -246,9 +246,9 @@ export function CheckItemsManagement() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Check Items Overview</CardTitle>
+          <CardTitle>Checklist Pengecekan Keseluruhan</CardTitle>
           <CardDescription>
-            Manage daily inspection checklist items and their order
+            Kelola item checklist inspeksi harian dan urutannya
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -256,7 +256,7 @@ export function CheckItemsManagement() {
             <div className="relative flex-1 max-w-sm">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search check items..."
+                placeholder="Cari Checklist..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -269,24 +269,24 @@ export function CheckItemsManagement() {
                   checked={showInactive}
                   onCheckedChange={setShowInactive}
                 />
-                <Label htmlFor="show-inactive">Show Inactive</Label>
+                <Label htmlFor="show-inactive">Tampilkan Tidak Aktif</Label>
               </div>
               <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
                 <DialogTrigger asChild>
                   <Button>
                     <Plus className="h-4 w-4 mr-2" />
-                    Add Check Item
+                    Tambah Checklist
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Create New Check Item</DialogTitle>
+                    <DialogTitle>Buat Checklist Item Baru</DialogTitle>
                     <DialogDescription>
-                      Add a new item to the daily inspection checklist.
+                      Tambahkan item baru ke dalam checklist inspeksi harian.
                     </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4">
-                    <div>
+                    <div className="grid gap-3">
                       <Label htmlFor="code">Code</Label>
                       <Input
                         id="code"
@@ -295,7 +295,7 @@ export function CheckItemsManagement() {
                         placeholder="Enter item code (e.g., CHK01)"
                       />
                     </div>
-                    <div>
+                    <div className="grid gap-3">
                       <Label htmlFor="label">Label</Label>
                       <Input
                         id="label"
@@ -304,8 +304,8 @@ export function CheckItemsManagement() {
                         placeholder="Enter item description (e.g., Check engine oil)"
                       />
                     </div>
-                    <div>
-                      <Label htmlFor="sort_order">Sort Order</Label>
+                    <div className="grid gap-3">
+                      <Label htmlFor="sort_order">Atur Urutan</Label>
                       <Input
                         id="sort_order"
                         type="number"
@@ -321,7 +321,7 @@ export function CheckItemsManagement() {
                         checked={formData.is_active}
                         onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_active: checked }))}
                       />
-                      <Label htmlFor="is_active">Active</Label>
+                      <Label htmlFor="is_active">Aktif</Label>
                     </div>
                   </div>
                   <DialogFooter>
@@ -332,16 +332,16 @@ export function CheckItemsManagement() {
                         setFormData({ code: "", label: "", sort_order: 1, is_active: true })
                       }}
                     >
-                      Cancel
+                      Batal
                     </Button>
                     <Button onClick={handleCreate} disabled={isSubmitting}>
                       {isSubmitting ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Creating...
+                          Membuat...
                         </>
                       ) : (
-                        "Create Item"
+                        "Buat Checklist"
                       )}
                     </Button>
                   </DialogFooter>
@@ -443,13 +443,13 @@ export function CheckItemsManagement() {
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit Check Item</DialogTitle>
+            <DialogTitle>Ubah Checklist Item</DialogTitle>
             <DialogDescription>
-              Update the check item information.
+              {`Ubah detail checklist item "${selectedItem?.label}"…`}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
-            <div>
+            <div className="grid gap-3">
               <Label htmlFor="edit-code">Code</Label>
               <Input
                 id="edit-code"
@@ -458,7 +458,7 @@ export function CheckItemsManagement() {
                 placeholder="Enter item code"
               />
             </div>
-            <div>
+            <div className="grid gap-3">
               <Label htmlFor="edit-label">Label</Label>
               <Input
                 id="edit-label"
@@ -467,7 +467,7 @@ export function CheckItemsManagement() {
                 placeholder="Enter item description"
               />
             </div>
-            <div>
+            <div className="grid gap-3">
               <Label htmlFor="edit-sort_order">Sort Order</Label>
               <Input
                 id="edit-sort_order"
@@ -496,16 +496,16 @@ export function CheckItemsManagement() {
                 setFormData({ code: "", label: "", sort_order: 1, is_active: true })
               }}
             >
-              Cancel
+              Batal
             </Button>
             <Button onClick={handleUpdate} disabled={isSubmitting}>
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Updating...
+                  Mengubah...
                 </>
               ) : (
-                "Update Item"
+                "Ubah Checklist"
               )}
             </Button>
           </DialogFooter>
@@ -516,9 +516,9 @@ export function CheckItemsManagement() {
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete Check Item</DialogTitle>
+            <DialogTitle>Hapus Checklist Item</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete &quot;{selectedItem?.code} - {selectedItem?.label}&quot;? This action cannot be undone.
+              Apakah anda yakin ingin menghapus &quot;{selectedItem?.code} - {selectedItem?.label}&quot;? Aksi ini tidak bisa dibatalkan.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -529,7 +529,7 @@ export function CheckItemsManagement() {
                 setSelectedItem(null)
               }}
             >
-              Cancel
+              Batal
             </Button>
             <Button
               variant="destructive"
@@ -539,10 +539,10 @@ export function CheckItemsManagement() {
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Deleting...
+                  Menghapus...
                 </>
               ) : (
-                "Delete Item"
+                "Hapus Checklist"
               )}
             </Button>
           </DialogFooter>

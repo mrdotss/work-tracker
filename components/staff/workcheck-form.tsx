@@ -108,10 +108,10 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
 
       setWorkcheck(transformedData)
       setHasVehicleSelected(true)
-      toast.success('Workcheck loaded for editing')
+      toast.success('Pengecekan diload untuk diedit')
     } catch (error) {
       console.error('Error fetching workcheck:', error)
-      toast.error('Failed to load workcheck details')
+      toast.error('Gagal memuat detail pengecekan')
     } finally {
       setIsLoading(false)
     }
@@ -148,7 +148,7 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
 
   const handleCreateWorkcheck = async () => {
     if (!selectedUnitId) {
-      toast.error('Please select a vehicle')
+      toast.error('Pilih unit terlebih dahulu')
       return
     }
 
@@ -295,12 +295,12 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
     )
 
     if (incompleteItems.length > 0) {
-      toast.error(`Please complete all ${incompleteItems.length} remaining items before submitting`)
+      toast.error(`Lengkapi semua ${incompleteItems.length} pengecekan yang tersisa sebelum mengirim`)
       return
     }
 
     if (!workcheck.hours_meter) {
-      toast.error('Please enter the hours meter reading')
+      toast.error('Masukkan meteran jam sebelum mengirim')
       return
     }
 
@@ -526,9 +526,9 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
     return (
         <Card>
           <CardHeader>
-            <CardTitle>No Workcheck Found</CardTitle>
+            <CardTitle>Tidak ada pengecekan</CardTitle>
             <CardDescription>
-              No workcheck has been assigned for today. Please contact your supervisor.
+              Tidak ada pengecekan yang tersedia.
             </CardDescription>
           </CardHeader>
         </Card>
@@ -539,9 +539,9 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
     return (
         <Card>
           <CardHeader>
-            <CardTitle>Select a Vehicle</CardTitle>
+            <CardTitle>Pilih Unit</CardTitle>
             <CardDescription>
-              Please select a vehicle to proceed with the workcheck.
+              Pilih unit yang akan diperiksa hari ini. Setelah memilih, anda dapat melakukan pengecekan.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -553,7 +553,7 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
                       variant={selectedUnitId === unit.id ? "default" : "outline"}
                       className="w-full justify-start"
                   >
-                    {unit.name} - {unit.type}
+                    {unit.type} - {unit.name} ({unit.number_plate})
                   </Button>
               ))}
             </div>
@@ -567,12 +567,12 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
               {isCreatingWorkcheck ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Creating...
+                    Membuat...
                   </>
               ) : (
                   <>
                     <Check className="mr-2 h-4 w-4" />
-                    Create Workcheck
+                    Buat Inspeksi
                   </>
               )}
             </Button>
@@ -616,15 +616,15 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
                 <div className="flex items-start gap-3">
                   <AlertCircle className="h-5 w-5 text-red-600 mt-0.5" />
                   <div>
-                    <h4 className="font-medium text-red-800 mb-1">Workcheck Rejected</h4>
+                    <h4 className="font-medium text-red-800 mb-1">Pengecekan Ditolaj</h4>
                     <p className="text-red-700 text-sm">
-                      Your workcheck was rejected with the following comment:
+                      Pengecekan anda telah ditolak. Dengan komentar berikut:
                     </p>
                     <div className="mt-2 p-3 bg-red-100 rounded-md">
                       <p className="text-red-800 text-sm italic">&ldquo;{workcheck.rejectionComment}&rdquo;</p>
                     </div>
                     <p className="text-red-600 text-sm mt-2">
-                      Please address the issues mentioned above and resubmit your workcheck.
+                      Silakan perbaiki masalah yang disebutkan di atas dan kirim ulang pengecekan Anda.
                     </p>
                   </div>
                 </div>
@@ -638,51 +638,51 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle className="flex items-center gap-2">
-                  {workcheck.unit.name} - {workcheck.unit.type}
+                  {workcheck.unit.name} - {workcheck.unit.type} - {workcheck.unit.number_plate || 'N/A'}
                   {workcheck.isSubmitted && (
                       <Badge variant="default">
                         <Check className="h-3 w-3 mr-1" />
-                        Submitted
+                        Dikirim
                       </Badge>
                   )}
                   {workcheck.approvalStatus === 'rejected' && (
                       <Badge variant="destructive">
                         <X className="h-3 w-3 mr-1" />
-                        Rejected
+                        Ditolak
                       </Badge>
                   )}
                   {workcheck.approvalStatus === 'pending' && editWorkcheckId && (
                       <Badge variant="secondary">
                         <Clock className="h-3 w-3 mr-1" />
-                        Pending Review
+                        Menunggu Review
                       </Badge>
                   )}
                 </CardTitle>
                 <CardDescription>
                   {editWorkcheckId ? (
                       <>
-                        Editing workcheck from {new Date(workcheck.created_at).toLocaleDateString()}
+                        Mengubah pengecekan dari {new Date(workcheck.created_at).toLocaleDateString()}
                         {workcheck.approvalStatus === 'rejected' && (
-                            <span className="text-red-600 font-medium"> - Please fix and resubmit</span>
+                            <span className="text-red-600 font-medium"> - Silakan perbaiki dan kirim ulang</span>
                         )}
                       </>
                   ) : (
-                      `Daily inspection for ${new Date(workcheck.created_at).toLocaleDateString()}`
+                      `Pengecekan harian untuk ${new Date(workcheck.created_at).toLocaleDateString()}`
                   )}
                 </CardDescription>
               </div>
               <div className="text-right">
                 <div className="text-2xl font-bold">{progress}%</div>
                 <div className="text-sm text-muted-foreground">
-                  {completedItems} of {totalItems} completed
+                  {completedItems} dari {totalItems} selesai
                 </div>
               </div>
             </div>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="hours-meter">Hours Meter Reading</Label>
+              <div className="grid gap-3">
+                <Label htmlFor="hours-meter">Kilometer</Label>
                 <Input
                     id="hours-meter"
                     type="number"
@@ -691,7 +691,7 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
                       const value = parseInt(e.target.value) || 0
                       debouncedHoursMeterUpdate(value)
                     }}
-                    placeholder="Enter current hours meter reading"
+                    placeholder="Masukkan meteran jam"
                     disabled={workcheck.isSubmitted}
                 />
               </div>
@@ -718,7 +718,7 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
                       {item.actions && item.actions.length > 0 && item.images.length > 0 && (
                           <Badge variant="default">
                             <Check className="h-3 w-3 mr-1" />
-                            Complete
+                            Selesai
                           </Badge>
                       )}
                     </CardTitle>
@@ -729,8 +729,8 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor={`action-${item.id}`}>Action Taken</Label>
+                    <div className="grid gap-2">
+                      <Label htmlFor={`action-${item.id}`}>Tindakan Yang Diambil</Label>
                       <div className="flex flex-wrap gap-4 mt-2">
                         {['P', 'B', 'L', 'T'].map(action => (
                             <div key={action} className="flex items-center space-x-2">
@@ -755,7 +755,7 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
                     </div>
                   </div>
 
-                  <div>
+                  <div className="grid gap-3">
                     <Label htmlFor={`note-${item.id}`}>Notes</Label>
                     <Textarea
                         id={`note-${item.id}`}
@@ -767,7 +767,7 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
                   </div>
 
                   {/* Image Upload */}
-                  <div>
+                  <div className="grid gap-2">
                     <Label>Proof Images</Label>
                     <div className="mt-2 space-y-2">
                       {!workcheck.isSubmitted && (
@@ -780,7 +780,7 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
                                 disabled={uploadingImages.has(item.id) || item.images.length > 0}
                             >
                               <Camera className="h-4 w-4 mr-2" />
-                              {item.images.length > 0 ? "Uploaded" : "Capture Photo"}
+                              {item.images.length > 0 ? "Diupload" : "Ambil Foto"}
                             </Button>
                           </div>
                       )}
@@ -829,7 +829,7 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
                                   onClick={capturePhoto}
                               >
                                 <Camera className="h-4 w-4 mr-2" />
-                                Capture
+                                Ambil
                               </Button>
                               <Button
                                   type="button"
@@ -838,7 +838,7 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
                                   onClick={stopCamera}
                               >
                                 <X className="h-4 w-4 mr-2" />
-                                Close Camera
+                                Tutup Kamera
                               </Button>
                             </div>
                           </div>
@@ -857,9 +857,9 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
                 <div className="flex items-center justify-between">
                   <div className="text-sm text-muted-foreground">
                     {completedItems === totalItems && totalItems > 0 ? (
-                        <span className="text-green-600 font-medium">All items completed! Ready to submit.</span>
+                        <span className="text-green-600 font-medium">Semua pengecekan selesai! Siap untuk mengirim.</span>
                     ) : (
-                        <span>Complete all {totalItems} items to submit your workcheck.</span>
+                        <span>Lengkapi semua {totalItems} pengecekan   untuk mengirim pengecekan Anda.</span>
                     )}
                   </div>
                   <Button
@@ -870,12 +870,12 @@ export function WorkcheckForm({ editWorkcheckId, onWorkcheckSubmitted }: Workche
                     {isSubmitting ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Submitting...
+                          Mengirim...
                         </>
                     ) : (
                         <>
                           <Check className="mr-2 h-4 w-4" />
-                          Submit Workcheck
+                          Kirim Pengecekan
                         </>
                     )}
                   </Button>

@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { toast } from "sonner"
-import { Loader2, Upload } from "lucide-react"
+import { Loader2, Upload, Clock } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -31,6 +31,11 @@ export function ProfileForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [lastLoginInfo, setLastLoginInfo] = useState<{
+    last_login: string | null;
+    created_at: string | null;
+    updated_at: string | null;
+  } | null>(null)
 
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
@@ -59,6 +64,37 @@ export function ProfileForm() {
       setImagePreview(session.user.user_image || null)
     }
   }, [session, form])
+
+  // Fetch last login information
+  useEffect(() => {
+    const fetchLastLoginInfo = async () => {
+      try {
+        const response = await fetch('/api/auth/check-last-login')
+        if (response.ok) {
+          const data = await response.json()
+          setLastLoginInfo(data.user)
+        }
+      } catch (error) {
+        console.error('Error fetching last login info:', error)
+      }
+    }
+
+    if (session?.user) {
+      fetchLastLoginInfo()
+    }
+  }, [session])
+
+  const formatDateTime = (dateString: string | null) => {
+    if (!dateString) return 'Tidak tersedia'
+    return new Date(dateString).toLocaleString('id-ID', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone: 'Asia/Jakarta'
+    })
+  }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -223,6 +259,16 @@ export function ProfileForm() {
                   <Badge variant={session.user.role === "ADMIN" ? "default" : "secondary"}>
                     {session.user.role}
                   </Badge>
+
+                  {/* Last Login Information */}
+                  {lastLoginInfo && (
+                    <div className="space-y-1 text-sm text-muted-foreground">
+                      <div className="flex items-center space-x-2">
+                        <Clock className="h-4 w-4" />
+                        <span>Login terakhir: {formatDateTime(lastLoginInfo.last_login)}</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <div className="flex items-center space-x-2">
                   <Input

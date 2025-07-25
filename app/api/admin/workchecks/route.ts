@@ -89,6 +89,7 @@ export async function GET(request: NextRequest) {
           select: {
             name: true,
             type: true,
+            number_plate: true,
           }
         },
         Approval: {
@@ -201,11 +202,7 @@ export async function POST(request: NextRequest) {
         }
       });
 
-      // Update workcheck status based on approval
-        await prisma.workcheck.update({
-            where: { id: workcheckId },
-            data: { is_submitted: isApproved }
-        });
+      // Note: Don't modify is_submitted when rejecting - the workcheck remains submitted but is rejected
 
     } else {
       // Create new approval

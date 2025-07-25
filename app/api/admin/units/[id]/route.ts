@@ -18,7 +18,7 @@ export async function PUT(
 
     const { id } = await params
     const body = await request.json()
-    const { name, type } = body
+    const { name, type, number_plate } = body
 
     if (!name || !type) {
       return NextResponse.json(
@@ -32,6 +32,7 @@ export async function PUT(
       data: {
         name: name.trim(),
         type: type.trim(),
+        number_plate: number_plate ? number_plate.trim() : null,
       },
     })
 

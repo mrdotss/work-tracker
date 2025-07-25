@@ -30,6 +30,7 @@ export function UnitsManagement() {
   const [formData, setFormData] = useState({
     name: "",
     type: "",
+    number_plate: "",
   })
 
   useEffect(() => {
@@ -78,7 +79,7 @@ export function UnitsManagement() {
       const newUnit = await response.json()
       setUnits(prev => [...prev, newUnit])
       setIsCreateDialogOpen(false)
-      setFormData({ name: "", type: "" })
+      setFormData({ name: "", type: "", number_plate: "" })
       toast.success('Unit created successfully')
     } catch (error) {
       console.error('Error creating unit:', error)
@@ -114,7 +115,7 @@ export function UnitsManagement() {
       ))
       setIsEditDialogOpen(false)
       setSelectedUnit(null)
-      setFormData({ name: "", type: "" })
+      setFormData({ name: "", type: "", number_plate: "" })
       toast.success('Unit updated successfully')
     } catch (error) {
       console.error('Error updating unit:', error)
@@ -176,6 +177,7 @@ export function UnitsManagement() {
     setFormData({
       name: unit.name,
       type: unit.type,
+      number_plate: unit.number_plate || "",
     })
     setIsEditDialogOpen(true)
   }
@@ -187,7 +189,8 @@ export function UnitsManagement() {
 
   const filteredUnits = units.filter(unit => {
     const matchesSearch = unit.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         unit.type.toLowerCase().includes(searchTerm.toLowerCase())
+                         unit.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (unit.number_plate && unit.number_plate.toLowerCase().includes(searchTerm.toLowerCase()))
     const matchesDeleted = showDeleted ? unit.is_deleted : !unit.is_deleted
     return matchesSearch && matchesDeleted
   })
@@ -204,9 +207,9 @@ export function UnitsManagement() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Units Overview</CardTitle>
+          <CardTitle>Unit Keseluruhan</CardTitle>
           <CardDescription>
-            Manage vehicle units in your fleet
+            Kelola unit kendaraan anda disini.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -214,7 +217,7 @@ export function UnitsManagement() {
             <div className="relative flex-1 max-w-sm">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search units..."
+                placeholder="Cari unit..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -225,39 +228,48 @@ export function UnitsManagement() {
                 variant={showDeleted ? "default" : "outline"}
                 onClick={() => setShowDeleted(!showDeleted)}
               >
-                {showDeleted ? "Show Active" : "Show Deleted"}
+                {showDeleted ? "Tampilkan Aktif" : "Tampilkan Dihapus"}
               </Button>
               <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
                 <DialogTrigger asChild>
                   <Button>
                     <Plus className="h-4 w-4 mr-2" />
-                    Add Unit
+                    Tambah Unit
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Create New Unit</DialogTitle>
+                    <DialogTitle>Buat Unit Baru</DialogTitle>
                     <DialogDescription>
-                      Add a new vehicle unit to your fleet.
+                      Tambahkan unit kendaraan baru ke dalam daftar anda.
                     </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="name">Unit Name</Label>
+                    <div className="grid gap-3">
+                      <Label htmlFor="name">Nama Unit</Label>
                       <Input
                         id="name"
                         value={formData.name}
                         onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                        placeholder="Enter unit name (e.g., Truck-001)"
+                        placeholder="Masukkan nama unit (contoh, Truck-001)"
                       />
                     </div>
-                    <div>
-                      <Label htmlFor="type">Unit Type</Label>
+                    <div className="grid gap-3">
+                      <Label htmlFor="type">Tipe Unit</Label>
                       <Input
                         id="type"
                         value={formData.type}
                         onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value }))}
-                        placeholder="Enter unit type (e.g., Excavator, Bulldozer)"
+                        placeholder="Masukkan tipe unit (contoh, Excavator, Bulldozer)"
+                      />
+                    </div>
+                    <div className="grid gap-3">
+                      <Label htmlFor="number_plate">Plat Nomor</Label>
+                      <Input
+                        id="number_plate"
+                        value={formData.number_plate}
+                        onChange={(e) => setFormData(prev => ({ ...prev, number_plate: e.target.value }))}
+                        placeholder="Masukkan plat nomor (contoh, B 1234 ABC)"
                       />
                     </div>
                   </div>
@@ -266,19 +278,19 @@ export function UnitsManagement() {
                       variant="outline"
                       onClick={() => {
                         setIsCreateDialogOpen(false)
-                        setFormData({ name: "", type: "" })
+                        setFormData({ name: "", type: "", number_plate: "" })
                       }}
                     >
-                      Cancel
+                      Batal
                     </Button>
                     <Button onClick={handleCreate} disabled={isSubmitting}>
                       {isSubmitting ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Creating...
+                          Membuat...
                         </>
                       ) : (
-                        "Create Unit"
+                        "Buat Unit"
                       )}
                     </Button>
                   </DialogFooter>
@@ -291,16 +303,17 @@ export function UnitsManagement() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Type</TableHead>
+                  <TableHead>Nama</TableHead>
+                  <TableHead>Tipe</TableHead>
+                  <TableHead>Plat Nomor</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead>Aksi</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredUnits.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center py-8">
+                    <TableCell colSpan={6} className="text-center py-8">
                       No units found
                     </TableCell>
                   </TableRow>
@@ -309,9 +322,10 @@ export function UnitsManagement() {
                     <TableRow key={unit.id}>
                       <TableCell className="font-medium">{unit.name}</TableCell>
                       <TableCell>{unit.type}</TableCell>
+                      <TableCell>{unit.number_plate || "-"}</TableCell>
                       <TableCell>
                         <Badge variant={unit.is_deleted ? "destructive" : "default"}>
-                          {unit.is_deleted ? "Deleted" : "Active"}
+                          {unit.is_deleted ? "Dihapus" : "Aktif"}
                         </Badge>
                       </TableCell>
                       <TableCell>
@@ -357,28 +371,37 @@ export function UnitsManagement() {
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit Unit</DialogTitle>
+            <DialogTitle>Ubah Unit</DialogTitle>
             <DialogDescription>
-              Update the unit information.
+              Perbarui informasi unit.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
-            <div>
-              <Label htmlFor="edit-name">Unit Name</Label>
+            <div className="grid gap-3">
+              <Label htmlFor="edit-name">Nama Unit</Label>
               <Input
                 id="edit-name"
                 value={formData.name}
                 onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                placeholder="Enter unit name"
+                placeholder="Masukkan nama unit"
               />
             </div>
-            <div>
-              <Label htmlFor="edit-type">Unit Type</Label>
+            <div className="grid gap-3">
+              <Label htmlFor="edit-type">Tipe Unit</Label>
               <Input
                 id="edit-type"
                 value={formData.type}
                 onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value }))}
-                placeholder="Enter unit type"
+                placeholder="Masukkan tipe unit"
+              />
+            </div>
+            <div className="grid gap-3">
+              <Label htmlFor="edit-number_plate">Plat Nomor</Label>
+              <Input
+                id="edit-number_plate"
+                value={formData.number_plate}
+                onChange={(e) => setFormData(prev => ({ ...prev, number_plate: e.target.value }))}
+                placeholder="Masukkan plat nomor"
               />
             </div>
           </div>
@@ -388,19 +411,19 @@ export function UnitsManagement() {
               onClick={() => {
                 setIsEditDialogOpen(false)
                 setSelectedUnit(null)
-                setFormData({ name: "", type: "" })
+                setFormData({ name: "", type: "", number_plate: "" })
               }}
             >
-              Cancel
+              Batal
             </Button>
             <Button onClick={handleUpdate} disabled={isSubmitting}>
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Updating...
+                  Memperbarui...
                 </>
               ) : (
-                "Update Unit"
+                "Ubah Unit"
               )}
             </Button>
           </DialogFooter>

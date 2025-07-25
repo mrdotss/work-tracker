@@ -69,8 +69,12 @@ function AdminPanelContent() {
 
   useEffect(() => {
     fetchUsers();
-    fetchWorkchecks();
     setLoading(false);
+  }, []);
+
+  // Fetch workchecks when page changes
+  useEffect(() => {
+    fetchWorkchecks();
   }, [currentPage, fetchWorkchecks]);
 
   if (loading) {
@@ -87,11 +91,11 @@ function AdminPanelContent() {
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="users" className="flex items-center gap-2">
               <User className="w-4 h-4" />
-              Staff Management
+              Manajemen Staf
             </TabsTrigger>
             <TabsTrigger value="tasks" className="flex items-center gap-2">
               <Activity className="w-4 h-4" />
-              Task Records
+              Riwayat Pengecekan
             </TabsTrigger>
           </TabsList>
 

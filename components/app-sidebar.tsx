@@ -41,16 +41,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             icon: IconUsers,
             items: [
               {
-                title: "Staff Management",
+                title: "Checklist Pengecekan",
+                url: "/admin/check-items",
+              },
+              {
+                title: "Manajemen Staff",
                 url: "/admin",
               },
               {
                 title: "Units",
                 url: "/admin/units",
-              },
-              {
-                title: "Check Items",
-                url: "/admin/check-items",
               },
             ],
           },

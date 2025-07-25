@@ -161,17 +161,17 @@ export function StaffManagement({ users, onRefresh }: StaffManagementProps) {
       <div className="flex justify-between items-center">
         <div className="flex gap-2">
           <Input
-            placeholder="Search users..."
+            placeholder="Cari user..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-64"
           />
           <Select value={selectedRole} onValueChange={setSelectedRole}>
-            <SelectTrigger className="w-32">
+            <SelectTrigger className="w-40">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Roles</SelectItem>
+              <SelectItem value="all">Semua Jabatan</SelectItem>
               <SelectItem value="STAFF">Staff</SelectItem>
               <SelectItem value="ADMIN">Admin</SelectItem>
             </SelectContent>
@@ -182,20 +182,20 @@ export function StaffManagement({ users, onRefresh }: StaffManagementProps) {
           <DialogTrigger asChild>
             <Button className="flex items-center gap-2">
               <Plus className="w-4 h-4" />
-              Create User
+              Buat User Baru
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Create New Staff User</DialogTitle>
+              <DialogTitle>Buat User Baru</DialogTitle>
               <DialogDescription>
-                Create a new staff member with a temporary password
+                Buat anggota staf baru dengan kata sandi
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-3">
-                  <Label htmlFor="first_name">First Name</Label>
+                  <Label htmlFor="first_name">Nama Depan</Label>
                   <Input
                     id="first_name"
                     value={newUser.first_name}
@@ -205,7 +205,7 @@ export function StaffManagement({ users, onRefresh }: StaffManagementProps) {
                   />
                 </div>
                 <div className="grid gap-3">
-                  <Label htmlFor="last_name">Last Name</Label>
+                  <Label htmlFor="last_name">Nama Belakang</Label>
                   <Input
                     id="last_name"
                     value={newUser.last_name}
@@ -227,7 +227,7 @@ export function StaffManagement({ users, onRefresh }: StaffManagementProps) {
                 />
               </div>
               <div className="grid gap-3">
-                <Label htmlFor="phone_number">Phone Number</Label>
+                <Label htmlFor="phone_number">Nomor Telepon (Opsional)</Label>
                 <Input
                   id="phone_number"
                   value={newUser.phone_number}
@@ -237,7 +237,7 @@ export function StaffManagement({ users, onRefresh }: StaffManagementProps) {
                 />
               </div>
               <div className="grid gap-3">
-                <Label htmlFor="role">Role</Label>
+                <Label htmlFor="role">Jabatan</Label>
                 <Select
                   value={newUser.role}
                   onValueChange={(value: 'STAFF' | 'ADMIN') =>
@@ -254,7 +254,7 @@ export function StaffManagement({ users, onRefresh }: StaffManagementProps) {
                 </Select>
               </div>
               <div className="grid gap-3">
-                <Label htmlFor="temporary_password">Temporary Password</Label>
+                <Label htmlFor="temporary_password">Password</Label>
                 <Input
                   id="temporary_password"
                   type="password"
@@ -268,7 +268,7 @@ export function StaffManagement({ users, onRefresh }: StaffManagementProps) {
                 />
               </div>
               <Button onClick={handleCreateUser} className="w-full">
-                Create User
+                Buat User
               </Button>
             </div>
           </DialogContent>
@@ -277,19 +277,19 @@ export function StaffManagement({ users, onRefresh }: StaffManagementProps) {
 
       <Card>
         <CardHeader>
-          <CardTitle>Staff Users</CardTitle>
-          <CardDescription>Manage your staff members</CardDescription>
+          <CardTitle>User List</CardTitle>
+          <CardDescription>Atur semua pengguna di sini</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
+                <TableHead>Nama</TableHead>
                 <TableHead>Username</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Last Login</TableHead>
+                <TableHead>Jabatan</TableHead>
+                <TableHead>Terakhir Login</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead>Aksi</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -337,7 +337,7 @@ export function StaffManagement({ users, onRefresh }: StaffManagementProps) {
                           user.is_active ? 'text-green-600' : 'text-red-600'
                         }
                       >
-                        {user.is_active ? 'Active' : 'Inactive'}
+                        {user.is_active ? 'Aktif' : 'Tidak Aktif'}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -369,7 +369,7 @@ export function StaffManagement({ users, onRefresh }: StaffManagementProps) {
                           }
                           title={
                             session?.user?.id === user.id
-                              ? 'You cannot deactivate your own account'
+                              ? 'Tidak dapat mengubah status akun sendiri'
                               : ''
                           }
                         >
@@ -392,15 +392,15 @@ export function StaffManagement({ users, onRefresh }: StaffManagementProps) {
       <Dialog open={!!editingUser} onOpenChange={() => setEditingUser(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit User</DialogTitle>
+            <DialogTitle>Ubah User</DialogTitle>
             <DialogDescription>
-              Update user information and settings
+              Ubah informasi dan status user
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-3">
-                <Label htmlFor="edit_first_name">First Name</Label>
+                <Label htmlFor="edit_first_name">Nama Depan</Label>
                 <Input
                   id="edit_first_name"
                   value={editUser.first_name}
@@ -410,7 +410,7 @@ export function StaffManagement({ users, onRefresh }: StaffManagementProps) {
                 />
               </div>
               <div className="grid gap-3">
-                <Label htmlFor="edit_last_name">Last Name</Label>
+                <Label htmlFor="edit_last_name">Nama Belakang</Label>
                 <Input
                   id="edit_last_name"
                   value={editUser.last_name}
@@ -432,7 +432,7 @@ export function StaffManagement({ users, onRefresh }: StaffManagementProps) {
               />
             </div>
             <div className="grid gap-3">
-              <Label htmlFor="edit_phone_number">Phone Number</Label>
+              <Label htmlFor="edit_phone_number">Nomor Telepon</Label>
               <Input
                 id="edit_phone_number"
                 value={editUser.phone_number}
@@ -442,7 +442,7 @@ export function StaffManagement({ users, onRefresh }: StaffManagementProps) {
               />
             </div>
             <div className="grid gap-3">
-              <Label htmlFor="edit_role">Role</Label>
+              <Label htmlFor="edit_role">Jabatan</Label>
               <Select
                 value={editUser.role}
                 onValueChange={(value: 'STAFF' | 'ADMIN') =>
@@ -470,11 +470,11 @@ export function StaffManagement({ users, onRefresh }: StaffManagementProps) {
                     })
                   }
                 />
-                <Label htmlFor="reset_password">Reset Password</Label>
+                <Label htmlFor="reset_password">Ubah Password</Label>
               </div>
               {editUser.reset_password && (
                 <div className="grid gap-3">
-                  <Label htmlFor="new_password">New Password</Label>
+                  <Label htmlFor="new_password">Password Baru</Label>
                   <Input
                     id="new_password"
                     type="password"
@@ -487,7 +487,7 @@ export function StaffManagement({ users, onRefresh }: StaffManagementProps) {
               )}
             </div>
             <Button onClick={handleUpdateUser} className="w-full">
-              Update User
+              Ubah User
             </Button>
           </div>
         </DialogContent>

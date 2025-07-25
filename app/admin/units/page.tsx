@@ -24,9 +24,9 @@ export default function UnitsPage() {
             <div className="mx-auto max-w-6xl">
               <div className="space-y-6">
                 <div>
-                  <h1 className="text-2xl font-bold">Vehicle Units</h1>
+                  <h1 className="text-2xl font-bold">Unit Kendaraan</h1>
                   <p className="text-muted-foreground">
-                    Manage vehicle units and their information.
+                    Kelola unit kendaraan dan informasi terkait.
                   </p>
                 </div>
                 <UnitsManagement />

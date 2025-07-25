@@ -18,15 +18,15 @@ export default function CheckItemsPage() {
     >
       <AppSidebar variant="inset" />
       <SidebarInset>
-        <SiteHeader title="Check Items Management" />
+        <SiteHeader title="Manajemen Checlist Pengecekan" />
         <div className="flex flex-1 flex-col">
           <main className="flex-1 p-6">
             <div className="mx-auto max-w-6xl">
               <div className="space-y-6">
                 <div>
-                  <h1 className="text-2xl font-bold">Check Items</h1>
+                  <h1 className="text-2xl font-bold">Checklist Pengecekan</h1>
                   <p className="text-muted-foreground">
-                    Manage daily inspection checklist items.
+                    Kelola item checklist inspeksi harian.
                   </p>
                 </div>
                 <CheckItemsManagement />
